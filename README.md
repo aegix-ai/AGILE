@@ -1,21 +1,64 @@
-**GAC (Governed Autonomous Cognition)** is a way to describe a system that doesn’t just *generate text*, but repeatedly **decides and acts** in an environment while being **kept inside explicit rules and verification gates**.
+## GAC — Governed Autonomous Cognition
 
-Scientifically, you can model it as a decision-making process under partial information (a **POMDP**). At each step \(t\), the system receives an observation \(o_t\) (from sensors, logs, web pages, tool outputs), maintains an internal belief/state summary \(b_t\) (memory + state estimation), chooses an action \(a_t\) (often a **tool call**, not a word), then receives outcomes and feedback \((o_{t+1}, r_t)\). The core object is a policy:
-\[
-\pi(a_t \mid b_t)
-\]
-meaning “given what I think is going on, what should I do next?”
+**GAC (Governed Autonomous Cognition)** describes a system that doesn’t just generate text, but repeatedly **decides and acts** in an environment while being held inside **explicit constraints, permissions, and verification gates**.
 
-What makes it *not just an LLM agent* is the **separation of roles** inside the system:
-- **Cognition (LLM / MoE):** proposes hypotheses, plans, decompositions, candidate actions. MoE is just routing: for a given context, activate a subset of specialized experts to compute the next internal representation efficiently.
-- **Control (RL / controllers):** learns a policy that’s judged by outcomes (reward, metrics, success/failure), especially for multi-step decisions where “good” depends on what happens later.
-- **Perception (CV/NLP modules):** turns raw inputs (images, audio, documents) into structured features that can be used in state \(b_t\).
-- **Memory / world model:** stores history and optionally predicts consequences of actions so you can plan rather than purely react.
+Scientifically, you can model GAC as decision-making under partial information (a **POMDP**). At each step *t*, the system receives an observation *oₜ* (tool outputs, logs, sensor data, web state), maintains an internal belief/state summary *bₜ* (memory + state estimation), chooses an action *aₜ* (often a **tool call**, not a token), and then receives outcomes and feedback *(oₜ₊₁, rₜ)*.
 
-The “**Governed**” part is the key distinction: action selection isn’t “whatever the model suggests.” Actions are filtered through constraints:
-\[
-a_t = \text{Guard}(\text{Propose}(b_t))
-\]
-where **Guard** can enforce permissions, rate limits, sandboxing, audit logs, require proofs/tests, block unsafe tool calls, and force fallbacks. In a real system, this is what prevents reward-hacking and tool misuse from turning “smart” into “dangerous.”
+The core object is a policy:
 
-So the clean scientific description is: **GAC is a constrained, hierarchical decision system where tool use is the action space, cognition proposes options, control optimizes behavior over time, perception updates state, memory provides context, and governance enforces invariants.**
+<div align="center">
+  <img
+    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi(a_t\mid%20b_t)}"
+    alt="pi(a_t | b_t)"
+    height="90"
+  />
+</div>
+
+Meaning: “given what I think is going on, what should I do next?”
+
+---
+
+### What makes it more than an LLM agent
+
+GAC is built as a **stack of distinct roles** rather than one monolithic prompt-following loop:
+
+- **Cognition (LLM / MoE):** generates hypotheses, plans, decompositions, and candidate actions.  
+  With **MoE**, a router activates a subset of specialized experts per context to increase capability efficiently.
+
+- **Control (RL / classical controllers):** selects and refines actions based on outcomes, especially when success depends on multi-step behavior and delayed feedback.
+
+- **Perception (CV / NLP / signal processing):** converts raw inputs (images, audio, documents) into features/representations that update the belief/state *bₜ*.
+
+- **Memory / World Model:** stores history and optionally predicts consequences of actions (a learned dynamics model or simulators), enabling planning instead of pure reaction.
+
+- **Tools (action interface):** defines the *real* action space: API calls, file ops, system commands, browser steps, DB queries, robotic commands, etc.
+
+---
+
+### The “Governed” part (the key difference)
+
+Action selection is not “whatever the model suggests.” Proposed actions are passed through explicit constraints:
+
+<div align="center">
+  <img
+    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle a_t=\mathrm{Guard}(\mathrm{Propose}(b_t))}"
+    alt="a_t = Guard(Propose(b_t))"
+    height="90"
+  />
+</div>
+
+Where **Guard** can enforce:
+- permissions / allowlists (what tools can be used)
+- rate limits, budgets, timeouts
+- sandboxing (run untrusted actions safely)
+- audit logging and reproducibility
+- mandatory verification (tests, validators, policy checks)
+- safe fallbacks and abort conditions
+
+This is the layer that prevents reward-hacking, unsafe tool use, and “high-confidence wrong actions” from turning capability into failure.
+
+---
+
+### One-line definition
+
+**GAC is a constrained, hierarchical decision system in which tool use is the action space, cognition proposes options, control optimizes behavior over time, perception updates state, memory supplies context, and governance enforces invariants.**
