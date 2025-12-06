@@ -1,64 +1,62 @@
-## GAC — Governed Autonomous Cognition
+## AGILE — Autonomous General Intelligence with Learning Elasticity
 
-**GAC (Governed Autonomous Cognition)** describes a system that doesn’t just generate text, but repeatedly **decides and acts** in an environment while being held inside **explicit constraints, permissions, and verification gates**.
+**AGILE (Autonomous General Intelligence with Learning Elasticity)** describes a system designed to **adapt rapidly**, **update its behavior fluidly**, and **extend its capabilities** with minimal friction as environments, goals, or data change.
 
-Scientifically, you can model GAC as decision-making under partial information (a **POMDP**). At each step *t*, the system receives an observation *oₜ* (tool outputs, logs, sensor data, web state), maintains an internal belief/state summary *bₜ* (memory + state estimation), chooses an action *aₜ* (often a **tool call**, not a token), and then receives outcomes and feedback *(oₜ₊₁, rₜ)*.
+Unlike static models or rigid agents, an AGILE system emphasizes **continuous improvement**, **modular expansion**, and **fast reconfiguration** without destabilizing the whole architecture. Its core property is **elastic learning** — the ability to integrate new information, skills, or tools while preserving prior competence.
 
-The core object is a policy:
+Scientifically, you can model AGILE as a **continually updating decision process**. At each step *t*, the system receives an observation *oₜ*, updates an internal belief *bₜ*, chooses an action *aₜ*, observes the consequence *(oₜ₊₁, rₜ)*, and uses this experience to **adapt its policy**, not just act with it.
+
+The core adaptive policy can be represented as:
 
 <div align="center">
   <img
-    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi(a_t\mid%20b_t)}"
-    alt="pi(a_t | b_t)"
+    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi_{t\!+\!\Delta}(a\mid b)=\mathrm{Update}(\pi_t,\;o_t,\;a_t,\;r_t)}"
+    alt="adaptive policy update"
     height="90"
   />
 </div>
 
-Meaning: “given what I think is going on, what should I do next?”
+Meaning: “after each interaction, adjust the policy to become better, safer, or more efficient.”
 
 ---
 
-### What makes it more than an LLM agent
+### What distinguishes AGILE from ordinary agents
 
-GAC is built as a **stack of distinct roles** rather than one monolithic prompt-following loop:
+AGILE is built around **continuous adaptability** rather than one-shot deployment:
 
-- **Cognition (LLM / MoE):** generates hypotheses, plans, decompositions, and candidate actions.  
-  With **MoE**, a router activates a subset of specialized experts per context to increase capability efficiently.
-
-- **Control (RL / classical controllers):** selects and refines actions based on outcomes, especially when success depends on multi-step behavior and delayed feedback.
-
-- **Perception (CV / NLP / signal processing):** converts raw inputs (images, audio, documents) into features/representations that update the belief/state *bₜ*.
-
-- **Memory / World Model:** stores history and optionally predicts consequences of actions (a learned dynamics model or simulators), enabling planning instead of pure reaction.
-
-- **Tools (action interface):** defines the *real* action space: API calls, file ops, system commands, browser steps, DB queries, robotic commands, etc.
+* **Elastic Learning:** the system continuously absorbs new data, corrections, and demonstrations without catastrophic forgetting.
+* **Modular Expansion:** new skills, tools, or specialists (MoE experts, controllers, planners) can be added without redesigning the whole architecture.
+* **Adaptive Cognition:** reasoning patterns and plans adjust dynamically based on updated world models, goals, and constraints.
+* **Rapid Reconfiguration:** system behavior can change quickly in response to environment shifts, user needs, or performance feedback.
 
 ---
 
-### The “Governed” part (the key difference)
+### The “Elasticity” layer (the defining feature)
 
-Action selection is not “whatever the model suggests.” Proposed actions are passed through explicit constraints:
+AGILE systems include mechanisms for **safe, controlled adaptation**, ensuring that updates improve capability without breaking existing behavior.
+
+Adaptation follows a guarded rule:
 
 <div align="center">
   <img
-    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle a_t=\mathrm{Guard}(\mathrm{Propose}(b_t))}"
-    alt="a_t = Guard(Propose(b_t))"
+    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi_{t\!+\!\Delta}=\mathrm{ElasticGuard}(\mathrm{ProposeUpdate}(\pi_t))}"
+    alt="elastic update rule"
     height="90"
   />
 </div>
 
-Where **Guard** can enforce:
-- permissions / allowlists (what tools can be used)
-- rate limits, budgets, timeouts
-- sandboxing (run untrusted actions safely)
-- audit logging and reproducibility
-- mandatory verification (tests, validators, policy checks)
-- safe fallbacks and abort conditions
+Where **ElasticGuard** enforces:
 
-This is the layer that prevents reward-hacking, unsafe tool use, and “high-confidence wrong actions” from turning capability into failure.
+* stability constraints (preventing regressions)
+* safety boundaries (no harmful behavioral drift)
+* compatibility checks (new skills don’t break old ones)
+* eval-based acceptance (updates must pass benchmarks)
+* rollback capability (revert if performance drops)
+
+This ensures the system **evolves safely and intentionally**, not chaotically.
 
 ---
 
 ### One-line definition
 
-**GAC is a constrained, hierarchical decision system in which tool use is the action space, cognition proposes options, control optimizes behavior over time, perception updates state, memory supplies context, and governance enforces invariants.**
+**AGILE is an adaptive intelligence system that continuously updates, expands, and refines its capabilities, using elastic learning mechanisms to stay flexible, safe, and high-performing as its environment and goals evolve.**
