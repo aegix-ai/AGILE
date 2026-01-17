@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agile-sandbox:latest
+    container_name: agile-sandbox
+    hostname: agile-sandbox
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./workspace:/home/sandbox/workspace
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    cgroup: host
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - ALL
+    networks:
+      - sandbox-net
+
+networks:
+  sandbox-net:
+    driver: bridge
