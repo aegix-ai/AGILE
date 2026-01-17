@@ -1,62 +1,57 @@
-## AGILE — Autonomous General Intelligence with Learning Elasticity
+# AGILE
 
-**AGILE (Autonomous General Intelligence with Learning Elasticity)** describes a system designed to **adapt rapidly**, **update its behavior fluidly**, and **extend its capabilities** with minimal friction as environments, goals, or data change.
+AGILE is a multi-agent experimental framework designed for running and orchestrating dozens of agents within a controlled sandbox environment.
 
-Unlike static models or rigid agents, an AGILE system emphasizes **continuous improvement**, **modular expansion**, and **fast reconfiguration** without destabilizing the whole architecture. Its core property is **elastic learning** — the ability to integrate new information, skills, or tools while preserving prior competence.
+## Overview
 
-Scientifically, you can model AGILE as a **continually updating decision process**. At each step *t*, the system receives an observation *oₜ*, updates an internal belief *bₜ*, chooses an action *aₜ*, observes the consequence *(oₜ₊₁, rₜ)*, and uses this experience to **adapt its policy**, not just act with it.
+AGILE provides a systemized environment for deploying and managing multiple autonomous agents. The framework isolates agent execution within a Docker-based sandbox with elevated permissions, enabling comprehensive experimentation while maintaining safety and control.
 
-The core adaptive policy can be represented as:
+## Sandbox Environment
 
-<div align="center">
-  <img
-    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi_{t\!+\!\Delta}(a\mid b)=\mathrm{Update}(\pi_t,\;o_t,\;a_t,\;r_t)}"
-    alt="adaptive policy update"
-    height="90"
-  />
-</div>
+The AGILE sandbox provides:
 
-Meaning: “after each interaction, adjust the policy to become better, safer, or more efficient.”
+- **Privileged Execution**: Docker containers run with elevated privileges for system-level experimentation
+- **Isolated Workspace**: Dedicated workspace volume for agent data and outputs
+- **Full System Access**: Unconfined seccomp, cgroup host access, and all capabilities enabled
+- **Network Isolation**: Bridge network for controlled inter-agent communication
 
----
+## Getting Started
 
-### What distinguishes AGILE from ordinary agents
+### Prerequisites
 
-AGILE is built around **continuous adaptability** rather than one-shot deployment:
+- Docker
+- Docker Compose
 
-* **Elastic Learning:** the system continuously absorbs new data, corrections, and demonstrations without catastrophic forgetting.
-* **Modular Expansion:** new skills, tools, or specialists (MoE experts, controllers, planners) can be added without redesigning the whole architecture.
-* **Adaptive Cognition:** reasoning patterns and plans adjust dynamically based on updated world models, goals, and constraints.
-* **Rapid Reconfiguration:** system behavior can change quickly in response to environment shifts, user needs, or performance feedback.
+### Running the Sandbox
 
----
+```bash
+cd sandbox
+docker-compose up -d
+```
 
-### The “Elasticity” layer (the defining feature)
+This will build and start the sandbox container in detached mode.
 
-AGILE systems include mechanisms for **safe, controlled adaptation**, ensuring that updates improve capability without breaking existing behavior.
+### Accessing the Sandbox
 
-Adaptation follows a guarded rule:
+```bash
+docker exec -it agile-sandbox /bin/bash
+```
 
-<div align="center">
-  <img
-    src="https://latex.codecogs.com/svg.image?\dpi{260}\bg{white}\color{black}{\displaystyle\pi_{t\!+\!\Delta}=\mathrm{ElasticGuard}(\mathrm{ProposeUpdate}(\pi_t))}"
-    alt="elastic update rule"
-    height="90"
-  />
-</div>
+The sandbox environment includes:
+- Python 3 with pip
+- Essential development tools (git, vim, nano)
+- Network utilities (ping, dnsutils)
+- System monitoring tools (htop, tree)
 
-Where **ElasticGuard** enforces:
+## Architecture
 
-* stability constraints (preventing regressions)
-* safety boundaries (no harmful behavioral drift)
-* compatibility checks (new skills don’t break old ones)
-* eval-based acceptance (updates must pass benchmarks)
-* rollback capability (revert if performance drops)
+The sandbox container is configured with:
+- Base image: Ubuntu 24.04
+- Non-root user: `sandbox` with sudo access
+- Default credentials: `sandbox/sandbox`
+- Working directory: `/home/sandbox`
+- Workspace mount: `/home/sandbox/workspace`
 
-This ensures the system **evolves safely and intentionally**, not chaotically.
+## Project Status
 
----
-
-### One-line definition
-
-**AGILE is an adaptive intelligence system that continuously updates, expands, and refines its capabilities, using elastic learning mechanisms to stay flexible, safe, and high-performing as its environment and goals evolve.**
+This project is currently in early development, focused on establishing the sandbox infrastructure for multi-agent experimentation.
