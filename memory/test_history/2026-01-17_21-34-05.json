@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-01-17_21-34-05",
+  "node": "test_node",
+  "action": "test_action",
+  "inputs": {
+    "input": "test"
+  },
+  "outputs": {
+    "output": "test"
+  },
+  "duration": 1.23,
+  "success": true
+}

@@ -12,7 +12,10 @@ services:
     stdin_open: true
     tty: true
     volumes:
+      - ../:/home/sandbox/AGILE
       - ./workspace:/home/sandbox/workspace
+      - ./memory:/home/sandbox/memory
+      - ./reports:/home/sandbox/reports
       - /var/run/docker.sock:/var/run/docker.sock
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     cgroup: host
