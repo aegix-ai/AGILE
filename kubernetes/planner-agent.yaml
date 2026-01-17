@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planner-agent
+spec:
+  selector:
+    matchLabels:
+      app: planner-agent
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: planner-agent
+    spec:
+      containers:
+      - name: planner-agent
+        image: python:3.11-slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - apt-get update && apt-get install -y curl &&
+            pip install redis requests &&
+            mkdir -p /app/shared &&
+            pip install --no-cache-dir -r /app/requirements.txt &&
+            python /app/planner_agent.py
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: OLLAMA_URL
+          value: "http://ollama:11434"
+        volumeMounts:
+        - name: agents-code
+          mountPath: /app
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: agents-code
+        configMap:
+          name: agents-code
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planner-agent
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: planner-agent

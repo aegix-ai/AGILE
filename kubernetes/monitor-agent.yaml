@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-agent
+spec:
+  selector:
+    matchLabels:
+      app: monitor-agent
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: monitor-agent
+    spec:
+      containers:
+      - name: monitor-agent
+        image: python:3.11-slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - pip install redis requests psutil &&
+            pip install --no-cache-dir -r /app/requirements.txt &&
+            python /app/monitor_agent.py
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: OLLAMA_URL
+          value: "http://ollama:11434"
+        volumeMounts:
+        - name: agents-code
+          mountPath: /app
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: agents-code
+        configMap:
+          name: agents-code
