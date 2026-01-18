@@ -86,26 +86,26 @@ AGILE (Autonomous General Intelligence with Learning Elasticity) Phase A has bee
 User Request
      ↓
 ┌─────────────────────────────────────┐
-│         Conductor               │
-│  • Orchestrates workflow         │
-│  • Spawns containers per act    │
-│  • Writes to harmony_memory.json  │
+│         Conductor                   │
+│  • Orchestrates workflow            │
+│  • Spawns containers per act        │
+│  • Writes to harmony_memory.json    │
 └─────────────────────────────────────┘
      ↓
 ┌─────────────────────────────────────┐
-│   Ephemeral Containers           │
-│   (docker run --rm)            │
+│   Ephemeral Containers              │
+│   (docker run --rm)                 │
 └─────────────────────────────────────┘
      ↓
-┌──────────┬──────────┬──────────┐
-│Researcher│  Coder   │ Documenter│
-└──────────┴──────────┴──────────┘
+┌──────────┬──────────┬────────────┐
+│Researcher│  Coder   │ Documenter │
+└──────────┴──────────┴────────────┘
      ↓
 ┌─────────────────────────────────────┐
-│    Shared State                │
-│  • harmony_memory.json         │
-│  • /reports/history/          │
-│  • /workspace/generated/        │
+│    Shared State                     │
+│  • harmony_memory.json              │
+│  • /reports/history/                │
+│  • /workspace/generated/            │
 └─────────────────────────────────────┘
 ```
 
