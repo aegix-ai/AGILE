@@ -3,43 +3,43 @@
 ## System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Host Operating System                    │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    Docker Sandbox Container                │ │
-│  │  ┌──────────────────────────────────────────────────────┐ │ │
-│  │  │               kind Kubernetes Cluster                │ │ │
-│  │  │                                                      │ │ │
-│  │  │  ┌────────────────────────────────────────────────┐ │ │ │
-│  │  │  │              Agent Pods                        │ │ │ │
-│  │  │  │                                                │ │ │ │
-│  │  │  │  ┌──────────┐  ┌──────────┐  ┌──────────┐    │ │ │ │
-│  │  │  │  │ Planner  │  │ Executor │  │ Analyzer │    │ │ │ │
-│  │  │  │  │  Agent   │  │  Agent   │  │  Agent   │    │ │ │ │
-│  │  │  │  └──────────┘  └──────────┘  └──────────┘    │ │ │ │
-│  │  │  │                                                │ │ │ │
-│  │  │  │  ┌──────────┐  ┌──────────┐                   │ │ │ │
-│  │  │  │  │Researcher│  │ Monitor  │                   │ │ │ │
-│  │  │  │  │  Agent   │  │  Agent   │                   │ │ │ │
-│  │  │  │  └──────────┘  └──────────┘                   │ │ │ │
-│  │  │  └────────────────────────────────────────────────┘ │ │ │
-│  │  │                                                      │ │ │
-│  │  │  ┌──────────────┐  ┌──────────────┐                │ │ │
-│  │  │  │     Redis    │  │    Ollama    │                │ │ │
-│  │  │  │  (Message    │  │   (LLM       │                │ │ │
-│  │  │  │    Bus)      │  │  Service)    │                │ │ │
-│  │  │  └──────────────┘  └──────────────┘                │ │ │
-│  │  │                                                      │ │ │
-│  │  └──────────────────────────────────────────────────────┘ │ │
-│  │                                                            │ │
-│  │  • Docker socket mounted (for agent execution)            │ │
-│  │  • Network isolation                                        │ │
-│  │  • Privileged mode (for Docker-in-Docker)                 │ │
-│  └────────────────────────────────────────────────────────────┘ │
+┌───────────────────────────────────────────────────────────────────┐
+│                         Host Operating System                     │
 │                                                                   │
-│  • Container isolation from host                                 │
-│  • No host OS access for agents                                 │
+│  ┌────────────────────────────────────────────────────────────┐   │
+│  │                    Docker Sandbox Container                │   │
+│  │  ┌──────────────────────────────────────────────────────┐  │   │
+│  │  │               kind Kubernetes Cluster                │  │   │
+│  │  │                                                      │  │   │
+│  │  │  ┌────────────────────────────────────────────────┐  │  │   │
+│  │  │  │              Agent Pods                        │  │  │   │
+│  │  │  │                                                │  │  │   │
+│  │  │  │  ┌──────────┐  ┌──────────┐  ┌──────────┐      │  │  │   │
+│  │  │  │  │ Planner  │  │ Executor │  │ Analyzer │      │  │  │   │
+│  │  │  │  │  Agent   │  │  Agent   │  │  Agent   │      │  │  │   │
+│  │  │  │  └──────────┘  └──────────┘  └──────────┘      │  │  │   │
+│  │  │  │                                                │  │  │   │
+│  │  │  │  ┌──────────┐  ┌──────────┐                    │  │  │   │
+│  │  │  │  │Researcher│  │ Monitor  │                    │  │  │   │
+│  │  │  │  │  Agent   │  │  Agent   │                    │  │  │   │
+│  │  │  │  └──────────┘  └──────────┘                    │  │  │   │
+│  │  │  └────────────────────────────────────────────────┘  │  │   │
+│  │  │                                                      │  │   │
+│  │  │  ┌──────────────┐  ┌──────────────┐                  │  │   │
+│  │  │  │     Redis    │  │    Ollama    │                  │  │   │
+│  │  │  │  (Message    │  │   (LLM       │                  │  │   │
+│  │  │  │    Bus)      │  │  Service)    │                  │  │   │
+│  │  │  └──────────────┘  └──────────────┘                  │  │   │
+│  │  │                                                      │  │   │
+│  │  └──────────────────────────────────────────────────────┘  │   │
+│  │                                                            │   │
+│  │  • Docker socket mounted (for agent execution)             │   │
+│  │  • Network isolation                                       │   │
+│  │  • Privileged mode (for Docker-in-Docker)                  │   │
+│  └────────────────────────────────────────────────────────────┘   │
+│                                                                   │
+│  • Container isolation from host                                  │
+│  • No host OS access for agents                                   │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
@@ -50,22 +50,22 @@ User Request
      │
      ▼
 ┌────────────┐
-│ Planner     │──── Plans task ────┐
-│ Agent       │                    │
-└────────────┘                    │
-     │                           │
-     │ Delegates tasks           │
-     ▼                           │
-┌────────────┐              ┌────────────┐
-│ Executor   │              │ Analyzer   │
-│ Agent       │◄───────┐    │ Agent       │
-└────────────┘        │    └────────────┘
-                      │           │
-                      │           ▼
-┌────────────┐   ┌────┴────┐  ┌────────────┐
-│ Researcher │   │  Redis  │  │ Monitor    │
-│ Agent       │──► Pub/Sub  ◄───│ Agent       │
-└────────────┘   └─────────┘  └────────────┘
+│ Planner    │── Plans task ───┐
+│ Agent      │                 │
+└────────────┘                 │
+     │                         │
+     │ Delegates tasks         │
+     ▼                         │
+┌────────────┐             ┌────────────┐
+│ Executor   │             │ Analyzer   │
+│ Agent      │◄──────┐     │ Agent      │
+└────────────┘       │     └────────────┘
+                     │           │
+                     │           ▼
+┌────────────┐   ┌───┴───┐   ┌────────────┐
+│ Researcher │   │ Redis │   │ Monitor    │
+│ Agent      │──► Pub/Sub ◄──│ Agent      │
+└────────────┘   └───────┘   └────────────┘
      │                  ▲
      │                  │
      └──────────────────┘
@@ -123,9 +123,9 @@ Layer 5: Command Execution
 ## Agent Capabilities
 
 | Agent      | Primary Role         | Can Execute Commands? | LLM Usage                   |
-|------------|---------------------|----------------------|----------------------------|
-| Planner    | Coordination         | No                   | Plan generation            |
-| Executor   | Command execution    | Yes (sandbox only)   | Command generation         |
-| Analyzer   | Data analysis        | No                   | Analysis generation        |
-| Researcher | Information research | No                   | Response generation        |
-| Monitor    | System monitoring    | No                   | Health assessment          |
+|------------|----------------------|-----------------------|-----------------------------|
+| Planner    | Coordination         | No                    | Plan generation             |
+| Executor   | Command execution    | Yes (sandbox only)    | Command generation          |
+| Analyzer   | Data analysis        | No                    | Analysis generation         |
+| Researcher | Information research | No                    | Response generation         |
+| Monitor    | System monitoring    | No                    | Health assessment           |
